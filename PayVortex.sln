@@ -3,9 +3,39 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{502E2403-EEDC-4A0A-A8EF-3CAB7CE9B2E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{55EC1F19-D9EF-457C-ACB3-BED6061C57B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{516D7A03-F6E1-4067-A92E-3A892AF8DB09}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthAPI", "AuthAPI", "{7494C381-79D4-4C34-8A53-16D4E935941C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5A17E4AB-E240-42DA-A06A-B76FEDA9FEC3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{2F115084-3610-40C7-B6DC-C24E69C7D6F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayVortex.Service.AuthAPI", "PayVortex.Service.AuthAPI\PayVortex.Service.AuthAPI.csproj", "{8142AC82-F984-42C3-BD19-D338F99D9D0C}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8142AC82-F984-42C3-BD19-D338F99D9D0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8142AC82-F984-42C3-BD19-D338F99D9D0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8142AC82-F984-42C3-BD19-D338F99D9D0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8142AC82-F984-42C3-BD19-D338F99D9D0C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7494C381-79D4-4C34-8A53-16D4E935941C} = {516D7A03-F6E1-4067-A92E-3A892AF8DB09}
+		{5A17E4AB-E240-42DA-A06A-B76FEDA9FEC3} = {7494C381-79D4-4C34-8A53-16D4E935941C}
+		{2F115084-3610-40C7-B6DC-C24E69C7D6F9} = {7494C381-79D4-4C34-8A53-16D4E935941C}
+		{8142AC82-F984-42C3-BD19-D338F99D9D0C} = {5A17E4AB-E240-42DA-A06A-B76FEDA9FEC3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9C305AA4-31ED-429D-B682-BF15A27CEE1F}
