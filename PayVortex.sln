@@ -15,7 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5A17E4AB-E24
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{2F115084-3610-40C7-B6DC-C24E69C7D6F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayVortex.Service.AuthAPI", "PayVortex.Service.AuthAPI\PayVortex.Service.AuthAPI.csproj", "{8142AC82-F984-42C3-BD19-D338F99D9D0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayVortex.Service.AuthAPI", "PayVortex.Service.AuthAPI\PayVortex.Service.AuthAPI.csproj", "{8142AC82-F984-42C3-BD19-D338F99D9D0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayVortex.Service.AuthAPI.Core", "PayVortex.Service.AuthAPI.Core\PayVortex.Service.AuthAPI.Core.csproj", "{65BE6DFA-7823-4612-8F22-EDFC1D886A3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayVortex.Service.AuthAPI.Infrastructure", "PayVortex.Service.AuthAPI.Infrastructure\PayVortex.Service.AuthAPI.Infrastructure.csproj", "{385D9969-D1E9-41FA-B0EF-80F94C32174B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{8142AC82-F984-42C3-BD19-D338F99D9D0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8142AC82-F984-42C3-BD19-D338F99D9D0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8142AC82-F984-42C3-BD19-D338F99D9D0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65BE6DFA-7823-4612-8F22-EDFC1D886A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BE6DFA-7823-4612-8F22-EDFC1D886A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65BE6DFA-7823-4612-8F22-EDFC1D886A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65BE6DFA-7823-4612-8F22-EDFC1D886A3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{385D9969-D1E9-41FA-B0EF-80F94C32174B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{385D9969-D1E9-41FA-B0EF-80F94C32174B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{385D9969-D1E9-41FA-B0EF-80F94C32174B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{385D9969-D1E9-41FA-B0EF-80F94C32174B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +48,8 @@ Global
 		{5A17E4AB-E240-42DA-A06A-B76FEDA9FEC3} = {7494C381-79D4-4C34-8A53-16D4E935941C}
 		{2F115084-3610-40C7-B6DC-C24E69C7D6F9} = {7494C381-79D4-4C34-8A53-16D4E935941C}
 		{8142AC82-F984-42C3-BD19-D338F99D9D0C} = {5A17E4AB-E240-42DA-A06A-B76FEDA9FEC3}
+		{65BE6DFA-7823-4612-8F22-EDFC1D886A3C} = {5A17E4AB-E240-42DA-A06A-B76FEDA9FEC3}
+		{385D9969-D1E9-41FA-B0EF-80F94C32174B} = {5A17E4AB-E240-42DA-A06A-B76FEDA9FEC3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9C305AA4-31ED-429D-B682-BF15A27CEE1F}
