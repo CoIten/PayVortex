@@ -26,7 +26,12 @@ namespace PayVortex.Service.AuthAPI.Controllers
         //[Authorize(Roles = "Admin")]
         //public async Task<ActionResult<UserDto>> CreateUser([FromBody] RegistrationRequestDto registrationDto)
         //{
-        //    var user = _mapper.Map<User>(registrationDto);
+        //    if (ModelState.IsValid)
+        //    {
+
+        //    }
+
+        //    var user = _mapper.Map<RegistrationRequest>(registrationDto);
         //    var createdUser = await _authService.Register(user);
         //    var createdUserDto = _mapper.Map<UserDto>(createdUser);
         //    return CreatedAtAction(nameof(this.GetUserByIdAsync), new { userId = createdUserDto.Id }, createdUserDto);

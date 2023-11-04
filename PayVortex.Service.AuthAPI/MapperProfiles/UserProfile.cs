@@ -8,7 +8,7 @@ namespace PayVortex.Service.AuthAPI.MapperProfiles
     {
         public UserProfile()
         {
-            CreateMap<RegistrationRequestDto, User>();
+            CreateMap<RegistrationRequestDto, RegistrationRequest>();
             CreateMap<User, UserDto>();
             CreateMap<LoginRequestDto, UserDto>();
         }
