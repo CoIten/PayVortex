@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using PayVortex.Service.AuthAPI.Core.Interfaces.Services;
+using PayVortex.Service.AuthAPI.Core.Models;
+using PayVortex.Service.AuthAPI.DTOs;
 
 namespace PayVortex.Service.AuthAPI.Controllers
 {
@@ -8,23 +13,31 @@ namespace PayVortex.Service.AuthAPI.Controllers
     [ApiController]
     public class AuthAPIController : ControllerBase
     {
+        private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
+
+        public AuthAPIController(IAuthService userService, IMapper mapper)
+        {
+            _authService = userService;
+            _mapper = mapper;
+        }
 
         //[HttpPost]
         //[Authorize(Roles = "Admin")]
-        //public async Task<ActionResult<UserDTO>> CreateUser([FromBody] UserPostDTO registrationDTO)
+        //public async Task<ActionResult<UserDto>> CreateUser([FromBody] RegistrationRequestDto registrationDto)
         //{
-        //    var userRegistration = _mapper.Map<UserPost>(registrationDTO);
-        //    var createdUser = await _userService.CreateUser(userRegistration);
-        //    var createdUserDTO = _mapper.Map<UserDTO>(createdUser);
-        //    return CreatedAtAction(nameof(this.GetUserByIdAsync), new { userId = createdUserDTO.Id }, createdUserDTO);
+        //    var user = _mapper.Map<User>(registrationDto);
+        //    var createdUser = await _authService.Register(user);
+        //    var createdUserDto = _mapper.Map<UserDto>(createdUser);
+        //    return CreatedAtAction(nameof(this.GetUserByIdAsync), new { userId = createdUserDto.Id }, createdUserDto);
         //}
 
         //[HttpPost("login")]
         //[AllowAnonymous]
-        //public async Task<IActionResult> Login([FromBody] UserLoginDTO userLoginDTO)
+        //public async Task<IActionResult> Login([FromBody] LoginRequestDto userLoginDTO)
         //{
-        //    var userLogin = _mapper.Map<UserLogin>(userLoginDTO);
-        //    var token = await _userService.AuthenticateAndGenerateToken(userLogin);
+        //    var userLogin = _mapper.Map<UserDto>(userLoginDTO);
+        //    var token = await _authService.AuthenticateAndGenerateToken(userLogin);
         //    if (token == null)
         //    {
         //        return Unauthorized();
