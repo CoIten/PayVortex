@@ -8,6 +8,6 @@ namespace PayVortex.Service.AuthAPI.Core.Models
 {
     public class RegistrationResponse : Response
     {
-
+        public User CreatedUser { get; set; }
     }
 }
