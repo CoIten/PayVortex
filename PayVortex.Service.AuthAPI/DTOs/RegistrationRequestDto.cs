@@ -17,6 +17,10 @@ namespace PayVortex.Service.AuthAPI.DTOs
         [RegularExpression("^[a-zA-Z ]+$", ErrorMessage = "Last name can only contain letters and spaces.")]
         public string LastName { get; set; }
         [Required]
+        [MaxLength(256)]
+        [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "Last name can only contain letters and numbers.")]
+        public string UserName { get; set; }
+        [Required]
         [MaxLength(20)]
         [RegularExpression(@"^[0-9]+([ -][0-9]+)*$", ErrorMessage = "Invalid phone number.")]
         public string PhoneNumber { get; set; }

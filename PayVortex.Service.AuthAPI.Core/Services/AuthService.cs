@@ -35,16 +35,7 @@ namespace PayVortex.Service.AuthAPI.Core.Services
                     return RegistrationResponse.Failure("Validation Errors", validationErrors);
                 }
 
-                User user = new()
-                {
-                    Email = registrationRequest.Email,
-                    Name = registrationRequest.Name,
-                    LastName = registrationRequest.LastName,
-                    PhoneNumber = registrationRequest.PhoneNumber
-                };
-
-                var passwordHash = HashUserPassword(user, registrationRequest.Password);
-                user.PasswordHash = passwordHash;
+                var user = PrepareIdentityUser(registrationRequest);
 
                 var createdUser = await _authRepository.CreateUserAsync(user);
                 return RegistrationResponse.Success("", createdUser);
@@ -93,9 +84,52 @@ namespace PayVortex.Service.AuthAPI.Core.Services
             return validationErrors;
         }
 
-        private string HashUserPassword(User user, string password)
+        private User PrepareIdentityUser(RegistrationRequest registrationRequest)
+        {
+            try
+            {
+                User user = new()
+                {
+                    Email = registrationRequest.Email,
+                    Name = registrationRequest.Name,
+                    LastName = registrationRequest.LastName,
+                    UserName = registrationRequest.UserName,
+                    PhoneNumber = registrationRequest.PhoneNumber
+                };
+
+                var passwordHash = HashUserPassword(user, registrationRequest.Password);
+                user.PasswordHash = passwordHash;
+
+                var normalizedUserName = NormalizeName(user.UserName);
+                user.NormalizedUserName = normalizedUserName;
+
+                var normalizedEmail = NormalizeEmail(user.Email);
+                user.NormalizedEmail = normalizedEmail;
+
+                user.LockoutEnabled = true;
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while creating a user.");
+                throw;
+            }
+        }
+
+        private string? HashUserPassword(User user, string password)
         {
             return _userManager.PasswordHasher.HashPassword(user, password);
+        }
+
+        private string? NormalizeName(string? name)
+        {
+            return _userManager.NormalizeName(name);
+        }
+
+        private string? NormalizeEmail(string? email)
+        {
+            return _userManager.NormalizeEmail(email);
         }
     }
 }
