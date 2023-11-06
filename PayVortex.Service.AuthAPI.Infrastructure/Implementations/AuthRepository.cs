@@ -61,5 +61,25 @@ namespace PayVortex.Service.AuthAPI.Infrastructure.Implementations
                 throw;
             }
         }
+
+        public async Task<User?> GetUserByEmail(string normalizedEmail)
+        {
+            try
+            {
+                var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
+                return user;
+            }
+            catch (DbException ex)
+            {
+                _logger.LogError(ex, "Database error occurred while retrieving a user.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while retrieving a user.");
+                throw;
+            }
+        }
+
     }
 }

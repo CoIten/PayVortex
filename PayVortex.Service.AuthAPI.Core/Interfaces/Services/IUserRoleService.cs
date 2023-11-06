@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace PayVortex.Service.AuthAPI.Core.Interfaces.Services
 {
-    public interface IAuthService
+    public interface IUserRoleService
     {
-        Task<RegistrationResponse> Register(RegistrationRequest registrationRequest);
-        Task<LoginResponse> Login(LoginRequest loginRequest);
-        Task<UserResponse> GetUserByEmail(string email);
+        Task<RoleAssignmentResponse> AssignRole(RoleAssignmentRequest request);
     }
 }

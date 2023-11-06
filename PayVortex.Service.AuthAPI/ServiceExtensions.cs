@@ -23,6 +23,7 @@ namespace PayVortex.Service.AuthAPI
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
             return services;
         }
 

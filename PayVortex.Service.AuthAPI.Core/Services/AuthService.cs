@@ -93,9 +93,32 @@ namespace PayVortex.Service.AuthAPI.Core.Services
             }
         }
 
+        public async Task<UserResponse> GetUserByEmail(string email)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(email))
+                {
+                    return UserResponse.Failure("Validation Errors", new List<string>() { "Email is required" });
+                }
+                var normalizedEmail = NormalizeEmail(email);
+                var user = await _authRepository.GetUserByEmail(normalizedEmail);
+                if (user == null)
+                {
+                    return UserResponse.Failure("User not found", new List<string>());
+                }
+                return UserResponse.Success("", user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while retrieveing a user.");
+                return UserResponse.Failure("An unexpected error occured", new List<string> { ex.Message });
+            }
+        }
+
         private IList<string> ValidateRegistrationRequest(RegistrationRequest registrationRequest)
         {
-            var validationErrors = new List<string>();
+            List<string> validationErrors = new();
 
             if (string.IsNullOrEmpty(registrationRequest.Name))
             {
@@ -122,7 +145,7 @@ namespace PayVortex.Service.AuthAPI.Core.Services
 
         private IList<string> ValidateLoginRequest(LoginRequest loginRequest)
         {
-            var validationErrors = new List<string>();
+            List<string> validationErrors = new();
 
             if (string.IsNullOrEmpty(loginRequest.UserName))
             {

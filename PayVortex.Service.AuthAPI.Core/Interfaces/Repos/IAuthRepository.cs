@@ -11,5 +11,6 @@ namespace PayVortex.Service.AuthAPI.Core.Interfaces.Repos
     {
         Task<User> CreateUserAsync(User user);
         Task<User> GetUserByUserName(string normalizedUserName);
+        Task<User> GetUserByEmail(string normalizedEmail);
     }
 }

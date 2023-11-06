@@ -7,6 +7,7 @@ namespace PayVortex.Service.AuthAPI.DTOs
         [Required]
         [EmailAddress]
         [DataType(DataType.EmailAddress)]
+        [MaxLength(256)]
         public string Email { get; set; }
         [Required]
         [MaxLength(256)]
@@ -18,7 +19,7 @@ namespace PayVortex.Service.AuthAPI.DTOs
         public string LastName { get; set; }
         [Required]
         [MaxLength(256)]
-        [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "Last name can only contain letters and numbers.")]
+        [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "User name can only contain letters and numbers.")]
         public string UserName { get; set; }
         [Required]
         [MaxLength(20)]
@@ -26,6 +27,7 @@ namespace PayVortex.Service.AuthAPI.DTOs
         public string PhoneNumber { get; set; }
         [Required]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
+        [MaxLength(256)]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).+$", ErrorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.")]
         public string Password { get; set; }
     }
