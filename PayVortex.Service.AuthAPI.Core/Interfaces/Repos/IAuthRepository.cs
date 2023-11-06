@@ -9,7 +9,7 @@ namespace PayVortex.Service.AuthAPI.Core.Interfaces.Repos
 {
     public interface IAuthRepository
     {
-        public Task<User> CreateUserAsync(User user);
-        public Task<User> GetUserByUserName(string normalizedUserName);
+        Task<User> CreateUserAsync(User user);
+        Task<User> GetUserByUserName(string normalizedUserName);
     }
 }

@@ -63,19 +63,30 @@ namespace PayVortex.Service.AuthAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto userLoginDTO)
         {
-            var userLogin = _mapper.Map<LoginRequest>(userLoginDTO);
-            var loginResponse = await _authService.Login(userLogin);
-
-            _response.IsSuccess = loginResponse.IsSuccess;
-            _response.Message = loginResponse.Message;
-            if (!loginResponse.IsSuccess)
+            try
             {
-                return BadRequest(_response);
-            }
+                var userLogin = _mapper.Map<LoginRequest>(userLoginDTO);
+                var loginResponse = await _authService.Login(userLogin);
 
-            var userDto = _mapper.Map<UserDto>(loginResponse.User);
-            _response.Result = new { loginResponse.Token, User = userDto };
-            return Ok(_response);
+                _response.IsSuccess = loginResponse.IsSuccess;
+                _response.Message = loginResponse.Message;
+                if (!loginResponse.IsSuccess)
+                {
+                    return BadRequest(_response);
+                }
+
+                var userDto = _mapper.Map<UserDto>(loginResponse.User);
+                _response.Result = new { loginResponse.Token, User = userDto };
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred during login process");
+
+                _response.IsSuccess = false;
+                _response.Message = "An unexpected error occurred";
+                return StatusCode(500, _response);
+            }
         }
     }
 }

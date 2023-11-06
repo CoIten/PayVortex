@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PayVortex.Service.AuthAPI.Core.Interfaces.Repos;
 using PayVortex.Service.AuthAPI.Core.Interfaces.Services;
+using PayVortex.Service.AuthAPI.Core.Models;
 using PayVortex.Service.AuthAPI.Core.Services;
 using PayVortex.Service.AuthAPI.Infrastructure.Implementations;
 using System.Text;
@@ -20,15 +22,15 @@ namespace PayVortex.Service.AuthAPI
         public static IServiceCollection AddApplicationCoreServices(this IServiceCollection services)
         {
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenService, TokenService>();
             return services;
         }
 
-        public static IServiceCollection AddJwtAuthServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJwtAuthServices(this IServiceCollection services, IOptions<JwtOptions> jwtOptions)
         {
-            var jwtSettings = configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"];
-            var validIssuer = jwtSettings["ValidIssuer"];
-            var validAudience = jwtSettings["ValidAudience"];
+            var secret = jwtOptions.Value.Secret;
+            var issuer = jwtOptions.Value.Issuer;
+            var audience = jwtOptions.Value.Audience;
 
             services.AddAuthentication(options =>
             {
@@ -43,9 +45,9 @@ namespace PayVortex.Service.AuthAPI
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = validIssuer,
-                    ValidAudience = validAudience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!))
                 };
             });
 

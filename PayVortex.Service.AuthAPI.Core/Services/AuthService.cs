@@ -16,12 +16,14 @@ namespace PayVortex.Service.AuthAPI.Core.Services
     public class AuthService : IAuthService
     {
         private readonly IAuthRepository _authRepository;
+        private readonly ITokenService _tokenService;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IAuthRepository authRepository, UserManager<User> userManager, ILogger<AuthService> logger)
+        public AuthService(IAuthRepository authRepository, ITokenService tokenService, UserManager<User> userManager, ILogger<AuthService> logger)
         {
             _authRepository = authRepository;
+            _tokenService = tokenService;
             _userManager = userManager;
             _logger = logger;
         }
@@ -70,7 +72,13 @@ namespace PayVortex.Service.AuthAPI.Core.Services
                     return LoginResponse.Failure("Incorrect username or password", new List<string>());
                 }
 
-                return LoginResponse.Success("Login was successful", user, "temp-token");
+                var tokenResponse = _tokenService.GenerateToken(user);
+                if (!tokenResponse.IsSuccess)
+                {
+                    LoginResponse.Failure(tokenResponse.Message, tokenResponse.Errors);
+                }
+
+                return LoginResponse.Success("Login was successful", user, tokenResponse.Token);
 
             }
             catch (DbException ex)

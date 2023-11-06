@@ -16,11 +16,12 @@ builder.Services.AddLogging(logging =>
 });
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PayVortex_Auth")));
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddJwtAuthServices(builder.Configuration);
+//builder.Services.AddJwtAuthServices(JwtOptions);
 builder.Services.AddSwaggerServices();
 builder.Services.AddInfraStructureServices();
 builder.Services.AddApplicationCoreServices();
