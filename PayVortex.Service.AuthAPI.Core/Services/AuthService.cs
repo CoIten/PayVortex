@@ -39,6 +39,7 @@ namespace PayVortex.Service.AuthAPI.Core.Services
                 {
                     Email = registrationRequest.Email,
                     Name = registrationRequest.Name,
+                    LastName = registrationRequest.LastName,
                     PhoneNumber = registrationRequest.PhoneNumber
                 };
 
@@ -72,6 +73,11 @@ namespace PayVortex.Service.AuthAPI.Core.Services
             if (string.IsNullOrEmpty(registrationRequest.Name))
             {
                 validationErrors.Add("Name is required");
+            }
+
+            if (string.IsNullOrEmpty(registrationRequest.LastName))
+            {
+                validationErrors.Add("Last name is required");
             }
 
             if (string.IsNullOrEmpty(registrationRequest.Email))
