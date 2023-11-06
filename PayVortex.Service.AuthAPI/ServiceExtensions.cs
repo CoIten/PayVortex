@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PayVortex.Service.AuthAPI.Core.Interfaces.Repos;
 using PayVortex.Service.AuthAPI.Core.Interfaces.Services;
 using PayVortex.Service.AuthAPI.Core.Services;
@@ -52,6 +53,34 @@ namespace PayVortex.Service.AuthAPI
             {
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
                 options.AddPolicy("Support", policy => policy.RequireRole("Support"));
+            });
+            return services;
+        }
+
+        public static IServiceCollection AddSwaggerServices(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(swagger =>
+            {
+                swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                swagger.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
             });
             return services;
         }
