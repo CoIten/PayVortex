@@ -39,12 +39,12 @@ namespace PayVortex.Service.AuthAPI.Core.Services
                 var user = PrepareIdentityUser(registrationRequest);
 
                 var createdUser = await _authRepository.CreateUserAsync(user);
-                return RegistrationResponse.Success("", createdUser);
+                return RegistrationResponse.Success("Registration was successful", createdUser);
             }
             catch(DbUpdateException ex)
             {
                 _logger.LogError(ex, "Database error occurred while creating a user.");
-                return RegistrationResponse.Failure("Database Error", new List<string> { ex.Message });
+                return RegistrationResponse.Failure("An unexpected error occured", new List<string> { ex.Message });
             }
             catch(Exception ex)
             {
@@ -65,22 +65,18 @@ namespace PayVortex.Service.AuthAPI.Core.Services
 
                 var normalizedUserName = NormalizeUserName(loginRequest.UserName);
                 var user = await _authRepository.GetUserByUserName(normalizedUserName);
-                if (user == null)
+                if (user == null || !await ValidatePassword(user, loginRequest.Password))
                 {
-                    return LoginResponse.Failure("User not found", new List<string>());
+                    return LoginResponse.Failure("Incorrect username or password", new List<string>());
                 }
 
-                var isValidPassword = await ValidatePassword(user, loginRequest.Password);
-                if (!isValidPassword)
-                {
-                    return LoginResponse.Failure("Invalid Password", new List<string>());
-                }
+                return LoginResponse.Success("Login was successful", user, "temp-token");
 
             }
             catch (DbException ex)
             {
                 _logger.LogError(ex, "Database error occurred during login process.");
-                return LoginResponse.Failure("Database Error", new List<string> { ex.Message });
+                return LoginResponse.Failure("An unexpected error occured", new List<string> { ex.Message });
             }
             catch (Exception ex)
             {

@@ -17,44 +17,45 @@ namespace PayVortex.Service.AuthAPI.Controllers
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
         private readonly ILogger<AuthAPIController> _logger;
+        protected ResponseDto _response;
 
         public AuthAPIController(IAuthService userService, IMapper mapper, ILogger<AuthAPIController> logger)
         {
             _authService = userService;
             _mapper = mapper;
             _logger = logger;
+            _response = new();
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult<UserDto>> Register([FromBody] RegistrationRequestDto registrationDto)
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] RegistrationRequestDto registrationDto)
         {
             try
             {
-                if (ModelState.IsValid)
+                var registrationRequest = _mapper.Map<RegistrationRequest>(registrationDto);
+                var registrationResponse = await _authService.Register(registrationRequest);
+                if (registrationResponse.IsSuccess)
                 {
-                    var registrationRequest = _mapper.Map<RegistrationRequest>(registrationDto);
-                    var registrationResponse = await _authService.Register(registrationRequest);
-                    if (registrationResponse.IsSuccess)
-                    {
-                        var createdUserDto = _mapper.Map<UserDto>(registrationResponse.CreatedUser);
-                        return Ok(new { User = createdUserDto, registrationResponse.Message });
-                    }
-                    else
-                    {
-                        return BadRequest(new { registrationResponse.Message, registrationResponse.Errors });
-                    }
+                    var createdUserDto = _mapper.Map<UserDto>(registrationResponse.CreatedUser);
+                    _response.Result = createdUserDto;
+                    _response.Message = registrationResponse.Message;
+                    return Ok(_response);
                 }
                 else
                 {
-                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                    return BadRequest(new { Message = "Validation Failed", Errors = errors});
+                    _response.IsSuccess = false;
+                    _response.Message = registrationResponse.Message;
+                    return BadRequest(_response);
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unexpected error occurred during registration");
-                return StatusCode(500, new { Message = "An unexpected error occurred", Error = ex.Message });
+
+                _response.IsSuccess = false;
+                _response.Message = "An unexpected error occurred";
+                return StatusCode(500, _response);
             }
         }
 
@@ -66,9 +67,15 @@ namespace PayVortex.Service.AuthAPI.Controllers
             var loginResponse = await _authService.Login(userLogin);
             if (!loginResponse.IsSuccess)
             {
-                return Unauthorized();
+                _response.IsSuccess = false;
+                _response.Message = loginResponse.Message;
+                return BadRequest(_response);
             }
-            return Ok(new { loginResponse.Token, loginResponse.Message });
+
+            _response.IsSuccess = true;
+            _response.Message = loginResponse.Message;
+            _response.Result = loginResponse.Token;
+            return Ok(_response);
         }
     }
 }
