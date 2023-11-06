@@ -94,7 +94,8 @@ namespace PayVortex.Service.AuthAPI.Core.Services
                     Name = registrationRequest.Name,
                     LastName = registrationRequest.LastName,
                     UserName = registrationRequest.UserName,
-                    PhoneNumber = registrationRequest.PhoneNumber
+                    PhoneNumber = registrationRequest.PhoneNumber,
+                    CreationDate = DateTime.Now
                 };
 
                 var passwordHash = HashUserPassword(user, registrationRequest.Password);

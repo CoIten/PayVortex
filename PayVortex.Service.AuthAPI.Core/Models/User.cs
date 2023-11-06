@@ -14,5 +14,6 @@ namespace PayVortex.Service.AuthAPI.Core.Models
         public string Name { get; set; }
         [MaxLength(256)]
         public string LastName { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }
