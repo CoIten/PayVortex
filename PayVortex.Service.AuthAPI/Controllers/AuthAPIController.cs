@@ -58,17 +58,17 @@ namespace PayVortex.Service.AuthAPI.Controllers
             }
         }
 
-        //[HttpPost("login")]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> Login([FromBody] LoginRequestDto userLoginDTO)
-        //{
-        //    var userLogin = _mapper.Map<UserDto>(userLoginDTO);
-        //    var token = await _authService.AuthenticateAndGenerateToken(userLogin);
-        //    if (token == null)
-        //    {
-        //        return Unauthorized();
-        //    }
-        //    return Ok(new { Token = token });
-        //}
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto userLoginDTO)
+        {
+            var userLogin = _mapper.Map<LoginRequest>(userLoginDTO);
+            var loginResponse = await _authService.Login(userLogin);
+            if (!loginResponse.IsSuccess)
+            {
+                return Unauthorized();
+            }
+            return Ok(new { loginResponse.Token, loginResponse.Message });
+        }
     }
 }

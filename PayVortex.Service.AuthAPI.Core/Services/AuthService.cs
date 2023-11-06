@@ -6,6 +6,7 @@ using PayVortex.Service.AuthAPI.Core.Interfaces.Services;
 using PayVortex.Service.AuthAPI.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,9 +53,40 @@ namespace PayVortex.Service.AuthAPI.Core.Services
             }
         }
 
-        public Task<LoginResponse> AuthenticateAndGenerateToken(LoginRequest loginRequest)
+        public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var validationErrors = ValidateLoginRequest(loginRequest);
+                if (validationErrors.Any())
+                {
+                    return LoginResponse.Failure("Validation Errors", validationErrors);
+                }
+
+                var normalizedUserName = NormalizeUserName(loginRequest.UserName);
+                var user = await _authRepository.GetUserByUserName(normalizedUserName);
+                if (user == null)
+                {
+                    return LoginResponse.Failure("User not found", new List<string>());
+                }
+
+                var isValidPassword = await ValidatePassword(user, loginRequest.Password);
+                if (!isValidPassword)
+                {
+                    return LoginResponse.Failure("Invalid Password", new List<string>());
+                }
+
+            }
+            catch (DbException ex)
+            {
+                _logger.LogError(ex, "Database error occurred during login process.");
+                return LoginResponse.Failure("Database Error", new List<string> { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred during login process.");
+                return LoginResponse.Failure("An unexpected error occured", new List<string> { ex.Message });
+            }
         }
 
         private IList<string> ValidateRegistrationRequest(RegistrationRequest registrationRequest)
@@ -84,6 +116,36 @@ namespace PayVortex.Service.AuthAPI.Core.Services
             return validationErrors;
         }
 
+        private IList<string> ValidateLoginRequest(LoginRequest loginRequest)
+        {
+            var validationErrors = new List<string>();
+
+            if (string.IsNullOrEmpty(loginRequest.UserName))
+            {
+                validationErrors.Add("User name is required");
+            }
+
+            if (string.IsNullOrEmpty(loginRequest.Password))
+            {
+                validationErrors.Add("Password is required");
+            }
+
+            return validationErrors;
+        }
+
+        private async Task<bool> ValidatePassword(User user, string password)
+        {
+            try
+            {
+                return await _userManager.CheckPasswordAsync(user, password);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred during passwprd validation.");
+                throw;
+            }
+        }
+
         private User PrepareIdentityUser(RegistrationRequest registrationRequest)
         {
             try
@@ -101,7 +163,7 @@ namespace PayVortex.Service.AuthAPI.Core.Services
                 var passwordHash = HashUserPassword(user, registrationRequest.Password);
                 user.PasswordHash = passwordHash;
 
-                var normalizedUserName = NormalizeName(user.UserName);
+                var normalizedUserName = NormalizeUserName(user.UserName);
                 user.NormalizedUserName = normalizedUserName;
 
                 var normalizedEmail = NormalizeEmail(user.Email);
@@ -123,9 +185,9 @@ namespace PayVortex.Service.AuthAPI.Core.Services
             return _userManager.PasswordHasher.HashPassword(user, password);
         }
 
-        private string? NormalizeName(string? name)
+        private string? NormalizeUserName(string? userName)
         {
-            return _userManager.NormalizeName(name);
+            return _userManager.NormalizeName(userName);
         }
 
         private string? NormalizeEmail(string? email)

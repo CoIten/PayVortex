@@ -6,6 +6,7 @@ using PayVortex.Service.AuthAPI.Core.Models;
 using PayVortex.Service.AuthAPI.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,25 @@ namespace PayVortex.Service.AuthAPI.Infrastructure.Implementations
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unexpected error occurred while creating a user.");
+                throw;
+            }
+        }
+
+        public async Task<User> GetUserByUserName(string normalizedUserName)
+        {
+            try
+            {
+                var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == normalizedUserName);
+                return user;
+            }
+            catch (DbException ex)
+            {
+                _logger.LogError(ex, "Database error occurred while retrieving a user.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while retrieving a user.");
                 throw;
             }
         }

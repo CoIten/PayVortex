@@ -12,7 +12,7 @@ namespace PayVortex.Service.AuthAPI.MapperProfiles
             CreateMap<RegistrationRequest, RegistrationRequestDto>();
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
-            CreateMap<LoginRequestDto, UserDto>();
+            CreateMap<LoginRequestDto, LoginRequest>();
         }
     }
 }
