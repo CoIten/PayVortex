@@ -27,7 +27,7 @@ namespace PayVortex.Service.AuthAPI.Controllers
             _response = new();
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegistrationRequestDto registrationDto)
         {
@@ -35,17 +35,17 @@ namespace PayVortex.Service.AuthAPI.Controllers
             {
                 var registrationRequest = _mapper.Map<RegistrationRequest>(registrationDto);
                 var registrationResponse = await _authService.Register(registrationRequest);
+
+                _response.IsSuccess = registrationResponse.IsSuccess;
+                _response.Message = registrationResponse.Message;
                 if (registrationResponse.IsSuccess)
                 {
                     var createdUserDto = _mapper.Map<UserDto>(registrationResponse.CreatedUser);
                     _response.Result = createdUserDto;
-                    _response.Message = registrationResponse.Message;
                     return Ok(_response);
                 }
                 else
                 {
-                    _response.IsSuccess = false;
-                    _response.Message = registrationResponse.Message;
                     return BadRequest(_response);
                 }
             }
@@ -65,16 +65,16 @@ namespace PayVortex.Service.AuthAPI.Controllers
         {
             var userLogin = _mapper.Map<LoginRequest>(userLoginDTO);
             var loginResponse = await _authService.Login(userLogin);
+
+            _response.IsSuccess = loginResponse.IsSuccess;
+            _response.Message = loginResponse.Message;
             if (!loginResponse.IsSuccess)
             {
-                _response.IsSuccess = false;
-                _response.Message = loginResponse.Message;
                 return BadRequest(_response);
             }
 
-            _response.IsSuccess = true;
-            _response.Message = loginResponse.Message;
-            _response.Result = loginResponse.Token;
+            var userDto = _mapper.Map<UserDto>(loginResponse.User);
+            _response.Result = new { loginResponse.Token, User = userDto };
             return Ok(_response);
         }
     }
