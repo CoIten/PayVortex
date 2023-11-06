@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PayVortex.Service.AuthAPI.Infrastructure.Data
 {
-    public class AppDbContext : IdentityDbContext<IdentityUser>
+    public class AppDbContext : IdentityDbContext<User>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {

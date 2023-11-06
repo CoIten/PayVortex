@@ -67,7 +67,7 @@ namespace PayVortex.Service.AuthAPI.Core.Services
 
                 var normalizedUserName = NormalizeUserName(loginRequest.UserName);
                 var user = await _authRepository.GetUserByUserName(normalizedUserName);
-                if (user == null || !await ValidatePassword(user, loginRequest.Password))
+                if (user == null || !ValidatePassword(user, loginRequest.Password).GetAwaiter().GetResult())
                 {
                     return LoginResponse.Failure("Incorrect username or password", new List<string>());
                 }
