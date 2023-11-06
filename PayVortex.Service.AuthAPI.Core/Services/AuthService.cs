@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PayVortex.Service.AuthAPI.Core.Interfaces.Repos;
 using PayVortex.Service.AuthAPI.Core.Interfaces.Services;
 using PayVortex.Service.AuthAPI.Core.Models;
@@ -15,11 +16,13 @@ namespace PayVortex.Service.AuthAPI.Core.Services
     {
         private readonly IAuthRepository _authRepository;
         private readonly UserManager<User> _userManager;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IAuthRepository authRepository, UserManager<User> userManager)
+        public AuthService(IAuthRepository authRepository, UserManager<User> userManager, ILogger<AuthService> logger)
         {
             _authRepository = authRepository;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<RegistrationResponse> Register(RegistrationRequest registrationRequest)
@@ -39,7 +42,7 @@ namespace PayVortex.Service.AuthAPI.Core.Services
                     PhoneNumber = registrationRequest.PhoneNumber
                 };
 
-                var passwordHash = _userManager.PasswordHasher.HashPassword(user, registrationRequest.Password);
+                var passwordHash = HashUserPassword(user, registrationRequest.Password);
                 user.PasswordHash = passwordHash;
 
                 var createdUser = await _authRepository.CreateUserAsync(user);
@@ -47,12 +50,19 @@ namespace PayVortex.Service.AuthAPI.Core.Services
             }
             catch(DbUpdateException ex)
             {
+                _logger.LogError(ex, "Database error occurred while creating a user.");
                 return RegistrationResponse.Failure("Database Error", new List<string> { ex.Message });
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex, "An unexpected error occurred while creating a user.");
                 return RegistrationResponse.Failure("An unexpected error occured", new List<string> { ex.Message });
             }
+        }
+
+        public Task<LoginResponse> AuthenticateAndGenerateToken(LoginRequest loginRequest)
+        {
+            throw new NotImplementedException();
         }
 
         private IList<string> ValidateRegistrationRequest(RegistrationRequest registrationRequest)
@@ -75,6 +85,11 @@ namespace PayVortex.Service.AuthAPI.Core.Services
             }
 
             return validationErrors;
+        }
+
+        private string HashUserPassword(User user, string password)
+        {
+            return _userManager.PasswordHasher.HashPassword(user, password);
         }
     }
 }

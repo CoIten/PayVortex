@@ -9,7 +9,7 @@ namespace PayVortex.Service.AuthAPI.Core.Interfaces.Services
 {
     public interface IAuthService
     {
-        public Task<RegistrationResponse> Register(RegistrationRequest user);
-        //public Task<string?> AuthenticateAndGenerateToken(UserLogin userLogin);
+        public Task<RegistrationResponse> Register(RegistrationRequest registrationRequest);
+        public Task<LoginResponse> AuthenticateAndGenerateToken(LoginRequest loginRequest);
     }
 }
